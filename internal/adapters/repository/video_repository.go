@@ -3,7 +3,7 @@ package repository
 import (
 	"fmt"
 
-	adapters "github.com/msantocardoso/video-data-extractor/adapters/output"
+	adapters "github.com/msantocardoso/video-data-extractor/internal/adapters/output"
 	"github.com/msantocardoso/video-data-extractor/internal/core/domain"
 	"github.com/msantocardoso/video-data-extractor/internal/core/ports"
 )
@@ -32,8 +32,3 @@ func (vr VideoRepository) Get(filename string) (*domain.Video, error) {
 		result.Format.DurationAsString(),
 	), nil
 }
-
-/*
-func (vr VideoRepository) GetAll(path string) ([]*domain.Video, error) {
-
-}*/
