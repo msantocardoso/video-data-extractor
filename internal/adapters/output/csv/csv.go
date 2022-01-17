@@ -6,20 +6,20 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/msantocardoso/video-data-extractor/internal/core/domain"
 )
 
-type Csv struct{}
+type Csv struct {
+	filename string
+}
 
-func New() *Csv {
-	return &Csv{}
+func New(filename string) *Csv {
+	return &Csv{filename: filename}
 }
 
 func (c Csv) Generate(path string, videos []*domain.Video) {
-	now := strings.ReplaceAll(time.Now().Format(time.RFC3339), ":", "")
-	file, err := os.Create(path + "/all-videos-" + now + ".csv")
+	file, err := os.Create(path + "/" + c.filename + ".csv")
 
 	defer file.Close()
 	if err != nil {
@@ -31,7 +31,20 @@ func (c Csv) Generate(path string, videos []*domain.Video) {
 	defer w.Flush()
 
 	for _, video := range videos {
+		refers := strings.Split(video.FileName(), "_")
+
+		modNameWithoutPath := strings.Split(refers[0], "\\")
+		modName := strings.ReplaceAll(modNameWithoutPath[len(modNameWithoutPath)-1], "-", " ")
+		className := strings.ReplaceAll(refers[1], "-", " ")
+		dateAndExtension := strings.Split(refers[2], ".")
+		date := dateAndExtension[0]
+		extension := dateAndExtension[1]
+
 		row := []string{
+			date,
+			modName,
+			className,
+			extension,
 			video.FileName(),
 			video.Duration,
 			strconv.FormatUint(video.Size(), 10),

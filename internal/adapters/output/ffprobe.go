@@ -26,6 +26,10 @@ func (f ProbeFormat) StartTime() time.Duration {
 	return time.Duration(f.StartTimeSeconds * float64(time.Second))
 }
 
+func (f ProbeFormat) SizeInMB() uint64 {
+	return f.Size / 1024 / 1024
+}
+
 func (f ProbeFormat) Duration() time.Duration {
 	return time.Duration(f.DurationSeconds * float64(time.Second))
 }
