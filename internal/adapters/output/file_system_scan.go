@@ -9,21 +9,22 @@ import (
 )
 
 type FileScan struct {
-	probe ProbeAdapter
+	probe              ProbeAdapter
+	allowed_extensions map[string]bool
 }
 
 func NewFileScan(allowed_extensions map[string]bool, probe *ProbeAdapter) *FileScan {
 	return &FileScan{
-		probe: *probe,
+		probe:              *probe,
+		allowed_extensions: allowed_extensions,
 	}
 }
 
 func (fs FileScan) GetAllFrom(path string) ([]*domain.Video, error) {
 	var videos []*domain.Video
-	extensions := loadExtensionMap()
 	err := filepath.Walk(path, func(filename string, info os.FileInfo, err error) error {
 		if !info.IsDir() {
-			valid := isValidExtension(filename, extensions)
+			valid := isValidExtension(filename, fs.allowed_extensions)
 			if valid {
 				video, _ := fs.Get(filename)
 				videos = append(videos, video)
@@ -54,14 +55,6 @@ func (fs FileScan) Get(filename string) (*domain.Video, error) {
 		result.Format.SizeInMB(),
 		result.Format.DurationAsString(),
 	), nil
-}
-
-func loadExtensionMap() map[string]bool {
-	return map[string]bool{
-		".mkv": true,
-		".mp4": true,
-		".avi": true,
-	}
 }
 
 func isValidExtension(filename string, extensions map[string]bool) bool {

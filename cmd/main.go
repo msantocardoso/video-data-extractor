@@ -11,7 +11,13 @@ import (
 
 func main() {
 	path := "C:/Users/msant/Videos/investalk-private-classes"
-	filescan := adapters.NewFileScan(make(map[string]bool, 0), &adapters.ProbeAdapter{})
+
+	allowExtensions := map[string]bool{
+		".mkv": true,
+		".mp4": true,
+		".avi": true,
+	}
+	filescan := adapters.NewFileScan(allowExtensions, &adapters.ProbeAdapter{})
 	videoUsecase := usecase.New(filescan)
 
 	videos, err := videoUsecase.LoadAllFrom(path)
